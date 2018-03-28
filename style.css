@@ -72,3 +72,7 @@ div.column.is-8:first-child {
 .post {
     opacity: 0;
 }
+
+.post:first-child {
+    opacity: 1; !important;
+}

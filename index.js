@@ -1,5 +1,12 @@
-let url = 'https://newsapi.org/v2/everything?domains=wsj.com,nytimes.com&pageSize=20&page=';
-let urlEnd = '&apiKey=d626f7167e81454581c8f31730f31a28';
+let request = new RequestBuilder();
+request.addUrl("https://newsapi.org")
+    .addResource("v2")
+    .addResource("everything")
+    .addValues("domains", "wsj.com,nytimes.com")
+    .addValues("pageSize", "20")
+    .addValues("apiKey", "d626f7167e81454581c8f31730f31a28")
+    .addValues("page", "")
+    .buildRequest();
 
 let page = 1;
 
@@ -28,7 +35,8 @@ window.onload = function () {
         });
     });
 
-    fetch(url + page + urlEnd)
+    request.setValue("page", "" + page)
+        .perform()
         .then(res => res.json())
         .then((out) => {
             console.log(out.articles);
@@ -39,9 +47,8 @@ window.onload = function () {
 };
 
 function retrieve() {
-    page++;
-    let t = url + page + urlEnd;
-    fetch(t)
+    request.setValue("page", "" + ++page)
+        .perform()
         .then(res => res.json())
         .then((out) => {
             console.log(out.articles);
