@@ -1,7 +1,7 @@
 let url = 'https://newsapi.org/v2/everything?domains=wsj.com,nytimes.com&pageSize=20&page=';
 let urlEnd = '&apiKey=d626f7167e81454581c8f31730f31a28';
 
-let page = 2;
+let page = 1;
 
 let animations = ["bounce", "pulse", "fadeIn",
     "fadeInDown", "fadeInLeft", "fadeInRight", "fadeInUp"];
@@ -11,15 +11,15 @@ let component;
 window.onload = function () {
 
     $(document).on('scroll', function() {
-        let o = this;
-        let c = component.$refs.foo;
+        let superObject = this;
+        let vueComponent = component.$refs.newsblogref;
         $(".post").each(function (index) {
-            if ($(o).scrollTop() >= $(this).position().top) {
-                if (index == c.lenTrigger() - 1 && !c.getTrigger(index)) {
+            if ($(superObject).scrollTop() >= $(this).position().top) {
+                if (index == vueComponent.lenTrigger() - 1 && !vueComponent.getTrigger(index)) {
                     retrieve();
                 }
-                if (!c.getTrigger(index)) {
-                    c.setTrigger(index);
+                if (!vueComponent.getTrigger(index)) {
+                    vueComponent.setTrigger(index);
                     $(this).addClass("animated");
                     $(this).addClass(animations[Math.floor(Math.random() * animations.length)]);
                     $(this).css({opacity: '1'});
@@ -34,7 +34,7 @@ window.onload = function () {
             console.log(out.articles);
             process(out.articles);
         }).then(function (data) {
-            component.$refs.foo.triggers();
+            component.$refs.newsblogref.triggers();
     });
 };
 
@@ -45,7 +45,7 @@ function retrieve() {
         .then(res => res.json())
         .then((out) => {
             console.log(out.articles);
-            component.$refs.foo.merge(out.articles);
+            component.$refs.newsblogref.merge(out.articles);
         });
 }
 
@@ -65,16 +65,20 @@ function getRandomInt(min, max) {
 
 Vue.component("post", {
     props: ['news'],
-    template: '<div class="card article post">' +
+    template: '' +
+    '           <div class="card article post">' +
    '                  <div class="card-content">' +
-   '                      <img :src="news.urlToImage" onerror="this.src = \'https://picsum.photos/1024/768/?image=\' + getRandomInt(1, 1000);" class="author-image" alt="Placeholder image">' +
+   '                      <img :src="news.urlToImage" ' +
+    '                       onerror="this.src = \'https://picsum.photos/1024/768/?image=\' + getRandomInt(1, 1000);" ' +
+    '                       class="author-image" alt="Placeholder image">' +
    '                  </div>' +
    '                  <div class="card-content">' +
    '                      <div class="media">' +
    '                          <div class="media-content has-text-centered">' +
    '                              <p class="title article-title">{{news.title}}</p>' +
    '                              <p class="subtitle is-6 article-subtitle author">' +
-   '                                  <a :href="news.url">@ {{news.author == null ? "Anonimous" : news.author}}</a> on {{news.publishedAt.replace(/T/ig, " ").replace(/Z/ig, " ")}}' +
+   '                                  <a :href="news.url">@ {{news.author == null ? "Anonimous" : news.author}}</a> ' +
+    '                                       on {{news.publishedAt.replace(/T/ig, " ").replace(/Z/ig, " ")}}' +
    '                              </p>' +
    '                          </div>' +
    '                      </div>' +
@@ -87,7 +91,8 @@ Vue.component("post", {
 
 Vue.component("newsblog", {
     props: ['news'],
-    template: '<div class="container">' +
+    template: '' +
+    '  <div class="container">' +
     '      <section class="articles">' +
     '          <div class="column is-8 is-offset-2">' +
     '             <post v-for="item in news" :news="item"></post>' +
